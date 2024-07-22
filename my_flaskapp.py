@@ -52,17 +52,17 @@ app.layout = dbc.Container([
 
     dbc.Row([
         dbc.Col([
-            dbc.DropdownMenu(
-                label="グラフ選択",
-                menu_variant="dark",
-                id="dropdown-menu",
-                children=[
-                    dbc.DropdownMenuItem("都道府県別住所頻度グラフ", id="prefecture-item"),
-                    dbc.DropdownMenuItem("流入経路の割合", id="channel-item"),
-                    dbc.DropdownMenuItem("リードタイムグラフ", id="lead-time-bar-item"),
-                    dbc.DropdownMenuItem("リードタイムの散布図", id="lead-time-scatter-item"),
-                    dbc.DropdownMenuItem("プラン名別人気度", id="plan-popularity-item")
-                ]
+            dcc.Dropdown(
+                id='dropdown-menu',
+                options=[
+                    {'label': '都道府県別住所頻度グラフ', 'value': 'prefecture'},
+                    {'label': '流入経路の割合', 'value': 'channel'},
+                    {'label': 'リードタイムグラフ', 'value': 'lead-time-bar'},
+                    {'label': 'リードタイムの散布図', 'value': 'lead-time-scatter'},
+                    {'label': 'プラン名別人気度', 'value': 'plan-popularity'}
+                ],
+                value='prefecture',
+                clearable=False
             ),
             dcc.Graph(id='graph-display')
         ], width=12)
@@ -72,13 +72,10 @@ app.layout = dbc.Container([
 # グラフのコールバック関数
 @app.callback(
     Output('graph-display', 'figure'),
-    [Input('dropdown-menu', 'children')]
+    [Input('dropdown-menu', 'value')]
 )
-def update_graph(selected_item):
-    if not selected_item:
-        return go.Figure()
-
-    if "都道府県別住所頻度グラフ" in selected_item:
+def update_graph(selected_value):
+    if selected_value == 'prefecture':
         fig = go.Figure(
             data=[go.Bar(
                 x=prefecture_counts.index,
@@ -90,7 +87,7 @@ def update_graph(selected_item):
                 yaxis_title='頻度'
             )
         )
-    elif "流入経路の割合" in selected_item:
+    elif selected_value == 'channel':
         fig = go.Figure(
             data=[go.Pie(
                 labels=channel_counts.index,
@@ -101,7 +98,7 @@ def update_graph(selected_item):
                 title='流入経路の割合'
             )
         )
-    elif "リードタイムグラフ" in selected_item:
+    elif selected_value == 'lead-time-bar':
         fig = go.Figure(
             data=[go.Bar(
                 x=df.index,
@@ -115,7 +112,7 @@ def update_graph(selected_item):
                 yaxis_title='Lead Time'
             )
         )
-    elif "リードタイムの散布図" in selected_item:
+    elif selected_value == 'lead-time-scatter':
         fig = go.Figure(
             data=[go.Scatter(
                 x=df.index,
@@ -129,7 +126,7 @@ def update_graph(selected_item):
                 yaxis_title='Lead Time'
             )
         )
-    elif "プラン名別人気度" in selected_item:
+    elif selected_value == 'plan-popularity':
         plan_counts = df['プラン名'].value_counts()
         fig = go.Figure(
             data=[go.Bar(
