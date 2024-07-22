@@ -48,41 +48,41 @@ app = dash.Dash(__name__, server=server, external_stylesheets=[dbc.themes.CYBORG
 
 # アプリケーションのレイアウト
 app.layout = dbc.Container([
-    dbc.Row(dbc.Col(html.H1("データ可視化", className="text-center mb-4"), width=12)),
+    dbc.Row(dbc.Col(html.H1("割烹旅館ゆめさき様_CRMデータ一覧", className="text-center mb-4"), width=6)),
 
     dbc.Row([
         dbc.Col([
             html.H2("都道府県別住所頻度グラフ"),
             dcc.Graph(id='prefecture-graph')
-        ], width=12)
+        ], width=5)
     ], className="mb-4"),
 
     dbc.Row([
         dbc.Col([
             html.H2("流入経路の割合"),
             dcc.Graph(id='channel-pie-chart')
-        ], width=12)
+        ], width=5)
     ], className="mb-4"),
 
     dbc.Row([
         dbc.Col([
             html.H2("リードタイムグラフ"),
             dcc.Graph(id='lead-time-bar-graph')
-        ], width=12)
+        ], width=5)
     ], className="mb-4"),
 
     dbc.Row([
         dbc.Col([
             html.H2("リードタイムの散布図"),
             dcc.Graph(id='lead-time-scatter-plot')
-        ], width=12)
+        ], width=5)
     ], className="mb-4"),
 
     dbc.Row([
         dbc.Col([
             html.H2("プラン名別人気度"),
             dcc.Graph(id='plan-popularity-graph')
-        ], width=12)
+        ], width=5)
     ], className="mb-4")
 ], fluid=True)
 
