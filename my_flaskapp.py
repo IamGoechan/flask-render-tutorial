@@ -48,126 +48,106 @@ app = dash.Dash(__name__, server=server, external_stylesheets=[dbc.themes.CYBORG
 
 # アプリケーションのレイアウト
 app.layout = dbc.Container([
-    dbc.Row(dbc.Col(html.H1("データ可視化", className="text-center mb-4", style={'font-size': '2rem'}), width=8)),
+    dbc.Row(dbc.Col(html.H1("データ可視化", className="text-center mb-4", style={'font-size': '2rem'}), width=12)),
 
     dbc.Row([
         dbc.Col([
-            html.H2("都道府県別住所頻度グラフ", style={'font-size': '1.5rem'}),
-            dcc.Graph(id='prefecture-graph')
-        ], width=8)
-    ], className="mb-4"),
-
-    dbc.Row([
-        dbc.Col([
-            html.H2("流入経路の割合", style={'font-size': '1.5rem'}),
-            dcc.Graph(id='channel-pie-chart')
-        ], width=8)
-    ], className="mb-4"),
-
-    dbc.Row([
-        dbc.Col([
-            html.H2("リードタイムグラフ", style={'font-size': '1.5rem'}),
-            dcc.Graph(id='lead-time-bar-graph')
-        ], width=8)
-    ], className="mb-4"),
-
-    dbc.Row([
-        dbc.Col([
-            html.H2("リードタイムの散布図", style={'font-size': '1.5rem'}),
-            dcc.Graph(id='lead-time-scatter-plot')
-        ], width=8)
-    ], className="mb-4"),
-
-    dbc.Row([
-        dbc.Col([
-            html.H2("プラン名別人気度", style={'font-size': '1.5rem'}),
-            dcc.Graph(id='plan-popularity-graph')
-        ], width=8)
+            dbc.DropdownMenu(
+                label="グラフ選択",
+                menu_variant="dark",
+                id="dropdown-menu",
+                children=[
+                    dbc.DropdownMenuItem("都道府県別住所頻度グラフ", id="prefecture-item"),
+                    dbc.DropdownMenuItem("流入経路の割合", id="channel-item"),
+                    dbc.DropdownMenuItem("リードタイムグラフ", id="lead-time-bar-item"),
+                    dbc.DropdownMenuItem("リードタイムの散布図", id="lead-time-scatter-item"),
+                    dbc.DropdownMenuItem("プラン名別人気度", id="plan-popularity-item")
+                ]
+            ),
+            dcc.Graph(id='graph-display')
+        ], width=12)
     ], className="mb-4")
 ], fluid=True)
 
 # グラフのコールバック関数
 @app.callback(
-    [Output('prefecture-graph', 'figure'),
-     Output('channel-pie-chart', 'figure'),
-     Output('lead-time-bar-graph', 'figure'),
-     Output('lead-time-scatter-plot', 'figure'),
-     Output('plan-popularity-graph', 'figure')],
-    [Input('prefecture-graph', 'id')]
+    Output('graph-display', 'figure'),
+    [Input('dropdown-menu', 'children')]
 )
-def update_graph(_):
-    # 都道府県別住所頻度グラフ
-    prefecture_fig = go.Figure(
-        data=[go.Bar(
-            x=prefecture_counts.index,
-            y=prefecture_counts.values
-        )],
-        layout=go.Layout(
-            title='都道府県別住所頻度',
-            xaxis_title='都道府県',
-            yaxis_title='頻度'
-        )
-    )
+def update_graph(selected_item):
+    if not selected_item:
+        return go.Figure()
 
-    # 流入経路の割合
-    channel_fig = go.Figure(
-        data=[go.Pie(
-            labels=channel_counts.index,
-            values=channel_counts.values,
-            hole=.3
-        )],
-        layout=go.Layout(
-            title='流入経路の割合'
+    if "都道府県別住所頻度グラフ" in selected_item:
+        fig = go.Figure(
+            data=[go.Bar(
+                x=prefecture_counts.index,
+                y=prefecture_counts.values
+            )],
+            layout=go.Layout(
+                title='都道府県別住所頻度',
+                xaxis_title='都道府県',
+                yaxis_title='頻度'
+            )
         )
-    )
-
-    # リードタイムの棒グラフ
-    bar_fig = go.Figure(
-        data=[go.Bar(
-            x=df.index,
-            y=df['リードタイム'],
-            text=df['リードタイム'],
-            textposition='auto'
-        )],
-        layout=go.Layout(
-            title='リードタイムの棒グラフ',
-            xaxis_title='Index',
-            yaxis_title='Lead Time'
+    elif "流入経路の割合" in selected_item:
+        fig = go.Figure(
+            data=[go.Pie(
+                labels=channel_counts.index,
+                values=channel_counts.values,
+                hole=.3
+            )],
+            layout=go.Layout(
+                title='流入経路の割合'
+            )
         )
-    )
-
-    # リードタイムの散布図
-    scatter_fig = go.Figure(
-        data=[go.Scatter(
-            x=df.index,
-            y=df['リードタイム'],
-            mode='markers',
-            marker=dict(size=10, color='rgba(219, 64, 82, 0.8)', line=dict(width=2, color='rgba(219, 64, 82, 0.8)'))
-        )],
-        layout=go.Layout(
-            title='リードタイムの散布図',
-            xaxis_title='Index',
-            yaxis_title='Lead Time'
+    elif "リードタイムグラフ" in selected_item:
+        fig = go.Figure(
+            data=[go.Bar(
+                x=df.index,
+                y=df['リードタイム'],
+                text=df['リードタイム'],
+                textposition='auto'
+            )],
+            layout=go.Layout(
+                title='リードタイムの棒グラフ',
+                xaxis_title='Index',
+                yaxis_title='Lead Time'
+            )
         )
-    )
-
-    # プラン名別人気度
-    plan_counts = df['プラン名'].value_counts()
-    plan_fig = go.Figure(
-        data=[go.Bar(
-            x=plan_counts.index,
-            y=plan_counts.values,
-            text=plan_counts.values,
-            textposition='auto'
-        )],
-        layout=go.Layout(
-            title='プラン名別人気度',
-            xaxis_title='プラン名',
-            yaxis_title='頻度'
+    elif "リードタイムの散布図" in selected_item:
+        fig = go.Figure(
+            data=[go.Scatter(
+                x=df.index,
+                y=df['リードタイム'],
+                mode='markers',
+                marker=dict(size=10, color='rgba(219, 64, 82, 0.8)', line=dict(width=2, color='rgba(219, 64, 82, 0.8)'))
+            )],
+            layout=go.Layout(
+                title='リードタイムの散布図',
+                xaxis_title='Index',
+                yaxis_title='Lead Time'
+            )
         )
-    )
+    elif "プラン名別人気度" in selected_item:
+        plan_counts = df['プラン名'].value_counts()
+        fig = go.Figure(
+            data=[go.Bar(
+                x=plan_counts.index,
+                y=plan_counts.values,
+                text=plan_counts.values,
+                textposition='auto'
+            )],
+            layout=go.Layout(
+                title='プラン名別人気度',
+                xaxis_title='プラン名',
+                yaxis_title='頻度'
+            )
+        )
+    else:
+        fig = go.Figure()
 
-    return prefecture_fig, channel_fig, bar_fig, scatter_fig, plan_fig
+    return fig
 
 # サーバーを起動
 if __name__ == '__main__':
