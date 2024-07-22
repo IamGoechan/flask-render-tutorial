@@ -3,4 +3,5 @@ pandas
 gunicorn
 matplotlib
 Flask==2.2.5
+dash-bootstrap-components
 
