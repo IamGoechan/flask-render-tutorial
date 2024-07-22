@@ -48,41 +48,41 @@ app = dash.Dash(__name__, server=server, external_stylesheets=[dbc.themes.CYBORG
 
 # アプリケーションのレイアウト
 app.layout = dbc.Container([
-    dbc.Row(dbc.Col(html.H1("データ可視化", className="text-center mb-4", style={'font-size': '2rem'}), width=12)),
+    dbc.Row(dbc.Col(html.H1("データ可視化", className="text-center mb-4", style={'font-size': '2rem'}), width=8)),
 
     dbc.Row([
         dbc.Col([
             html.H2("都道府県別住所頻度グラフ", style={'font-size': '1.5rem'}),
             dcc.Graph(id='prefecture-graph')
-        ], width=12)
+        ], width=8)
     ], className="mb-4"),
 
     dbc.Row([
         dbc.Col([
             html.H2("流入経路の割合", style={'font-size': '1.5rem'}),
             dcc.Graph(id='channel-pie-chart')
-        ], width=12)
+        ], width=8)
     ], className="mb-4"),
 
     dbc.Row([
         dbc.Col([
             html.H2("リードタイムグラフ", style={'font-size': '1.5rem'}),
             dcc.Graph(id='lead-time-bar-graph')
-        ], width=12)
+        ], width=8)
     ], className="mb-4"),
 
     dbc.Row([
         dbc.Col([
             html.H2("リードタイムの散布図", style={'font-size': '1.5rem'}),
             dcc.Graph(id='lead-time-scatter-plot')
-        ], width=12)
+        ], width=8)
     ], className="mb-4"),
 
     dbc.Row([
         dbc.Col([
             html.H2("プラン名別人気度", style={'font-size': '1.5rem'}),
             dcc.Graph(id='plan-popularity-graph')
-        ], width=12)
+        ], width=8)
     ], className="mb-4")
 ], fluid=True)
 
