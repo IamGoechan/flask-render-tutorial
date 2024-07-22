@@ -1,15 +1,12 @@
-import pandas as pd
-import re
 from flask import Flask
 import dash
-import dash_core_components as dcc
-import dash_html_components as html
+from dash import dcc, html
 from dash.dependencies import Input, Output
 import plotly.graph_objs as go
+import pandas as pd
 
 # CSVファイルの読み込み
-df=pd.read_csv("予約一覧20240717.csv")
-# カラムのリネーム
+df = pd.read_csv("予約一覧20240717.csv")
 df.rename(columns={'住所': 'address'}, inplace=True)
 
 # 都道府県名を抽出する関数
@@ -32,16 +29,13 @@ def extract_prefecture(address):
 
 # 住所から都道府県名を抽出
 df['prefecture'] = df['address'].apply(extract_prefecture)
-
-# NaNの値を無視して集計
 prefecture_counts = df['prefecture'].dropna().value_counts()
-print(prefecture_counts)
 
+# Flask アプリケーションの設定
+server = Flask(__name__)
 
-
-
-# Dashアプリケーションの設定
-app = dash.Dash(__name__)
+# Dash アプリケーションの設定
+app = dash.Dash(__name__, server=server)
 
 # アプリケーションのレイアウト
 app.layout = html.Div(children=[
