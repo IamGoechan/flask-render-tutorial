@@ -1,6 +1,7 @@
 import pandas as pd
 from flask import Flask
 import dash
+import dash_bootstrap_components as dbc
 from dash import dcc, html
 from dash.dependencies import Input, Output
 import plotly.graph_objs as go
@@ -44,6 +45,8 @@ server = Flask(__name__)
 
 # Dash アプリケーションの設定
 app = dash.Dash(__name__, server=server)
+app = dash.Dash(__name__, server=server, external_stylesheets=[dbc.themes.BOOTSTRAP])
+
 
 # アプリケーションのレイアウト
 app.layout = html.Div(children=[
