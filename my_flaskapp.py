@@ -44,38 +44,47 @@ df['リードタイム'] = (df['申込受付日'] - df['チェックイン日'])
 server = Flask(__name__)
 
 # Dash アプリケーションの設定
-app = dash.Dash(external_stylesheets=[dbc.themes.CYBORG])
-
+app = dash.Dash(__name__, server=server, external_stylesheets=[dbc.themes.CYBORG])
 
 # アプリケーションのレイアウト
-app.layout = html.Div(children=[
-    html.H1(children='データ可視化'),
+app.layout = dbc.Container([
+    dbc.Row(dbc.Col(html.H1("データ可視化", className="text-center mb-4"), width=12)),
 
-    html.Div(children=[
-        html.H2(children='都道府県別住所頻度グラフ'),
-        dcc.Graph(id='prefecture-graph')
-    ]),
+    dbc.Row([
+        dbc.Col([
+            html.H2("都道府県別住所頻度グラフ"),
+            dcc.Graph(id='prefecture-graph')
+        ], width=12)
+    ], className="mb-4"),
 
-    html.Div(children=[
-        html.H2(children='流入経路の割合'),
-        dcc.Graph(id='channel-pie-chart')
-    ]),
+    dbc.Row([
+        dbc.Col([
+            html.H2("流入経路の割合"),
+            dcc.Graph(id='channel-pie-chart')
+        ], width=12)
+    ], className="mb-4"),
 
-    html.Div(children=[
-        html.H2(children='リードタイムグラフ'),
-        dcc.Graph(id='lead-time-bar-graph')
-    ]),
+    dbc.Row([
+        dbc.Col([
+            html.H2("リードタイムグラフ"),
+            dcc.Graph(id='lead-time-bar-graph')
+        ], width=12)
+    ], className="mb-4"),
 
-    html.Div(children=[
-        html.H2(children='リードタイムの散布図'),
-        dcc.Graph(id='lead-time-scatter-plot')
-    ]),
+    dbc.Row([
+        dbc.Col([
+            html.H2("リードタイムの散布図"),
+            dcc.Graph(id='lead-time-scatter-plot')
+        ], width=12)
+    ], className="mb-4"),
 
-    html.Div(children=[
-        html.H2(children='プラン名別人気度'),
-        dcc.Graph(id='plan-popularity-graph')
-    ])
-])
+    dbc.Row([
+        dbc.Col([
+            html.H2("プラン名別人気度"),
+            dcc.Graph(id='plan-popularity-graph')
+        ], width=12)
+    ], className="mb-4")
+], fluid=True)
 
 # グラフのコールバック関数
 @app.callback(
