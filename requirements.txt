@@ -1,0 +1,6 @@
+dash==2.17.1
+pandas
+gunicorn
+matplotlib
+Flask==2.2.5
+
