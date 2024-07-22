@@ -9,8 +9,6 @@ import plotly.graph_objs as go
 
 # CSVファイルの読み込み
 df=pd.read_csv("予約一覧20240717.csv")
-df = pd.read_csv(df)
-
 # カラムのリネーム
 df.rename(columns={'住所': 'address'}, inplace=True)
 
