@@ -44,7 +44,7 @@ df['リードタイム'] = (df['申込受付日'] - df['チェックイン日'])
 server = Flask(__name__)
 
 # Dash アプリケーションの設定
-app = dash.Dash(__name__, server=server, external_stylesheets=[dbc.themes.CYBORG])
+app = dash.Dash(__name__, server=server, external_stylesheets=[dbc.themes.BOOTSTRAP])
 
 # アプリケーションのレイアウト
 app.layout = dbc.Container([
